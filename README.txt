@@ -99,9 +99,9 @@ Use this setup if you prefer running the project without Docker.
    - EMAIL_PORT=587
    - EMAIL_USE_TLS=True
    - EMAIL_USE_SSL=False
-   - EMAIL_HOST_USER=azadsarkar616@gmail.com
-   - EMAIL_HOST_PASSWORD=xoxx mafu mybx wcmv
-   - DEFAULT_FROM_EMAIL=azadsarkar616@gmail.com
+   - EMAIL_HOST_USER=example@gmail.com
+   - EMAIL_HOST_PASSWORD=PASSWORD
+   - DEFAULT_FROM_EMAIL=example@gmail.com
 
 
 5. Apply database migrations and create a superuser
