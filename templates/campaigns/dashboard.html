@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}Campaign Dashboard{% endblock %}
+
+{% block content %}
+<h2 class="subtitle">Campaigns</h2>
+
+<table class="table is-striped is-fullwidth">
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Subject</th>
+        <th>Scheduled</th>
+        <th>Status</th>
+        <th>Recipients</th>
+        <th>Sent</th>
+        <th>Failed</th>
+        <th>Summary</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for campaign in campaigns %}
+        <tr>
+            <td><a href="{% url 'campaigns:campaign_detail' campaign.pk %}">{{ campaign.name }}</a></td>
+            <td>{{ campaign.subject }}</td>
+            <td>{{ campaign.scheduled_time }}</td>
+            <td>{{ campaign.get_status_display }}</td>
+            <td>{{ campaign.subscribed_recipients_count }}</td>
+            <td>{{ campaign.sent_count }}</td>
+            <td>{{ campaign.failed_count }}</td>
+            <td>{{ campaign.sent_count }}/{{ campaign.subscribed_recipients_count }}</td>
+        </tr>
+    {% empty %}
+        <tr>
+            <td colspan="8">No campaigns yet.</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
+
+

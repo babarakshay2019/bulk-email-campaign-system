@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Bulk Mailer{% endblock %}</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
+</head>
+<body>
+<section class="section">
+    <div class="container">
+        <h1 class="title">Bulk Email Campaign Management</h1>
+        <nav class="breadcrumb" aria-label="breadcrumbs">
+            <ul>
+                <li><a href="{% url 'campaigns:dashboard' %}">Dashboard</a></li>
+                <li><a href="{% url 'campaigns:campaign_create' %}">New Campaign</a></li>
+                <li><a href="{% url 'campaigns:recipient_upload' %}">Upload Recipients</a></li>
+            </ul>
+        </nav>
+
+        {% if messages %}
+            <div>
+                {% for message in messages %}
+                    <div class="notification is-info">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% block content %}{% endblock %}
+    </div>
+</section>
+</body>
+</html>
+
+

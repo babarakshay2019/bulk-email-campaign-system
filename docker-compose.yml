@@ -1,0 +1,53 @@
+version: '3.9'
+
+services:
+  web:
+    build: .
+    command: >
+      sh -c "
+      python manage.py migrate &&
+      gunicorn bulkmailer.wsgi:application
+      --bind 0.0.0.0:8000
+      --workers 3
+      --threads 2
+      --timeout 120
+      "
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    depends_on:
+      - redis
+    restart: always
+
+  celery:
+    build: .
+    command: celery -A bulkmailer worker -l info --concurrency=2
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+    depends_on:
+      - redis
+    restart: always
+
+  celery-beat:
+    build: .
+    command: >
+      sh -c "
+      python manage.py migrate &&
+      celery -A bulkmailer beat -l info
+      "
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+    depends_on:
+      - redis
+    restart: always
+
+  redis:
+    image: redis:7-alpine
+    restart: always

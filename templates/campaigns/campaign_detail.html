@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}Campaign {{ campaign.name }}{% endblock %}
+
+{% block content %}
+<h2 class="subtitle">Campaign: {{ campaign.name }}</h2>
+
+<div class="box">
+    <p><strong>Subject:</strong> {{ campaign.subject }}</p>
+    <p><strong>Scheduled:</strong> {{ campaign.scheduled_time }}</p>
+    <p><strong>Status:</strong> {{ campaign.get_status_display }}</p>
+    <p><strong>Summary:</strong> {{ sent_count }}/{{ campaign.total_recipients }} sent, {{ failed_count }} failed</p>
+</div>
+
+<h3 class="subtitle">Delivery Logs ({{ total }})</h3>
+
+<table class="table is-striped is-fullwidth">
+    <thead>
+    <tr>
+        <th>Recipient</th>
+        <th>Status</th>
+        <th>Failure Reason</th>
+        <th>Sent At</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for log in logs %}
+        <tr>
+            <td>{{ log.recipient_email }}</td>
+            <td>{{ log.get_status_display }}</td>
+            <td>{{ log.failure_reason }}</td>
+            <td>{{ log.sent_at }}</td>
+        </tr>
+    {% empty %}
+        <tr>
+            <td colspan="4">No delivery logs yet.</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
+
+
