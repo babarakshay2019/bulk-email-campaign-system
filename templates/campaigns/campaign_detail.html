@@ -1,43 +1,81 @@
 {% extends "base.html" %}
 
-{% block title %}Campaign {{ campaign.name }}{% endblock %}
+{% block title %}Campaign – {{ campaign.name }}{% endblock %}
+{% block page_title %}Campaign Details{% endblock %}
 
 {% block content %}
-<h2 class="subtitle">Campaign: {{ campaign.name }}</h2>
 
+<!-- Campaign Summary -->
 <div class="box">
-    <p><strong>Subject:</strong> {{ campaign.subject }}</p>
-    <p><strong>Scheduled:</strong> {{ campaign.scheduled_time }}</p>
-    <p><strong>Status:</strong> {{ campaign.get_status_display }}</p>
-    <p><strong>Summary:</strong> {{ sent_count }}/{{ campaign.total_recipients }} sent, {{ failed_count }} failed</p>
+    <div class="columns is-multiline">
+        <div class="column is-6">
+            <p><strong>Name:</strong> {{ campaign.name }}</p>
+            <p><strong>Subject:</strong> {{ campaign.subject }}</p>
+        </div>
+
+        <div class="column is-6">
+            <p>
+                <strong>Status:</strong>
+                <span class="tag is-info is-light">
+                    {{ campaign.get_status_display }}
+                </span>
+            </p>
+            <p>
+                <strong>Scheduled Time:</strong>
+                {{ campaign.scheduled_time|date:"M d, Y H:i" }}
+            </p>
+        </div>
+
+        <div class="column is-12 mt-3">
+            <p>
+                <strong>Summary:</strong>
+                <span class="tag is-success">{{ sent_count }} Sent</span>
+                <span class="tag is-danger">{{ failed_count }} Failed</span>
+                <span class="tag is-dark">{{ total }} Total</span>
+            </p>
+        </div>
+    </div>
 </div>
 
-<h3 class="subtitle">Delivery Logs ({{ total }})</h3>
+<!-- Delivery Logs -->
+<h3 class="subtitle">Delivery Logs</h3>
 
-<table class="table is-striped is-fullwidth">
+<table class="table is-striped is-hoverable is-fullwidth">
     <thead>
-    <tr>
-        <th>Recipient</th>
-        <th>Status</th>
-        <th>Failure Reason</th>
-        <th>Sent At</th>
-    </tr>
+        <tr>
+            <th>Recipient</th>
+            <th>Status</th>
+            <th>Failure Reason</th>
+            <th>Sent At</th>
+        </tr>
     </thead>
     <tbody>
-    {% for log in logs %}
-        <tr>
-            <td>{{ log.recipient_email }}</td>
-            <td>{{ log.get_status_display }}</td>
-            <td>{{ log.failure_reason }}</td>
-            <td>{{ log.sent_at }}</td>
-        </tr>
-    {% empty %}
-        <tr>
-            <td colspan="4">No delivery logs yet.</td>
-        </tr>
-    {% endfor %}
+        {% for log in logs %}
+            <tr>
+                <td>{{ log.recipient_email }}</td>
+                <td>
+                    {% if log.status == "sent" %}
+                        <span class="tag is-success">Sent</span>
+                    {% elif log.status == "failed" %}
+                        <span class="tag is-danger">Failed</span>
+                    {% else %}
+                        <span class="tag is-warning">Pending</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {{ log.failure_reason|default:"—" }}
+                </td>
+                <td>
+                    {{ log.sent_at|date:"M d, Y H:i" }}
+                </td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="4" class="has-text-centered has-text-grey">
+                    No delivery logs available yet.
+                </td>
+            </tr>
+        {% endfor %}
     </tbody>
 </table>
 {% endblock %}
-
-

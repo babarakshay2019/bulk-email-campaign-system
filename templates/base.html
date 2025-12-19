@@ -3,24 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}Bulk Mailer{% endblock %}</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
+
+    <!-- Bulma CSS -->
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css"
+    >
+
+    {% block extra_css %}{% endblock %}
 </head>
 <body>
+
+<!-- Navbar -->
+<nav class="navbar is-dark" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+        <a class="navbar-item has-text-weight-bold" href="{% url 'campaigns:dashboard' %}">
+            Bulk Mailer
+        </a>
+    </div>
+
+    <div class="navbar-menu">
+        <div class="navbar-start">
+            <a class="navbar-item" href="{% url 'campaigns:dashboard' %}">
+                Dashboard
+            </a>
+            <a class="navbar-item" href="{% url 'campaigns:campaign_create' %}">
+                New Campaign
+            </a>
+            <a class="navbar-item" href="{% url 'campaigns:recipient_upload' %}">
+                Upload Recipients
+            </a>
+        </div>
+    </div>
+</nav>
+
+<!-- Main Content -->
 <section class="section">
     <div class="container">
-        <h1 class="title">Bulk Email Campaign Management</h1>
-        <nav class="breadcrumb" aria-label="breadcrumbs">
-            <ul>
-                <li><a href="{% url 'campaigns:dashboard' %}">Dashboard</a></li>
-                <li><a href="{% url 'campaigns:campaign_create' %}">New Campaign</a></li>
-                <li><a href="{% url 'campaigns:recipient_upload' %}">Upload Recipients</a></li>
-            </ul>
-        </nav>
 
+        <h1 class="title is-4">
+            {% block page_title %}Bulk Email Campaign Management{% endblock %}
+        </h1>
+
+        <!-- Messages -->
         {% if messages %}
-            <div>
+            <div class="mb-4">
                 {% for message in messages %}
-                    <div class="notification is-info">
+                    <div class="notification
+                        {% if message.tags == 'success' %}is-success
+                        {% elif message.tags == 'error' %}is-danger
+                        {% elif message.tags == 'warning' %}is-warning
+                        {% else %}is-info{% endif %}">
                         {{ message }}
                     </div>
                 {% endfor %}
@@ -30,7 +63,16 @@
         {% block content %}{% endblock %}
     </div>
 </section>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="content has-text-centered">
+        <p class="is-size-7">
+            © {{ now|date:"Y" }} Bulk Mailer · Built with Django & Celery
+        </p>
+    </div>
+</footer>
+
+{% block extra_js %}{% endblock %}
 </body>
 </html>
-
-

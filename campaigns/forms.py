@@ -6,8 +6,7 @@ from .models import Campaign
 
 class CampaignForm(forms.ModelForm):
     scheduled_time = forms.DateTimeField(
-        widget=forms.DateTimeInput(attrs={"type": "datetime-local"}),
-        help_text="Date and time when the campaign should start sending.",
+        widget=forms.DateTimeInput(attrs={"type": "datetime-local"})
     )
 
     class Meta:
@@ -16,7 +15,6 @@ class CampaignForm(forms.ModelForm):
 
     def clean_scheduled_time(self):
         value = self.cleaned_data["scheduled_time"]
-        # Normalize to aware datetime in current timezone for reliable comparison.
         if timezone.is_naive(value):
             value = timezone.make_aware(value, timezone.get_current_timezone())
         now_local = timezone.localtime(timezone.now())
@@ -27,8 +25,4 @@ class CampaignForm(forms.ModelForm):
 
 
 class RecipientUploadForm(forms.Form):
-    file = forms.FileField(
-        help_text="Upload a CSV file with columns: name,email,subscription_status"
-    )
-
-
+    file = forms.FileField()

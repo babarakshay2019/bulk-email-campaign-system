@@ -36,7 +36,6 @@ Project Structure
 - campaigns/  - Core app with models, tasks, views, admin.
 - templates/  - HTML templates (minimal Bulma-based UI).
 - sample_recipients.csv - Example recipient data for bulk upload.
-- sample_campaigns.csv  - Example campaigns data (for reference).
 
 
 Setup Instructions
@@ -44,18 +43,32 @@ Setup Instructions
 
 1. Clone and enter the project
    ---------------------------
+    git clone <repository-url>
 
-   - Initialize git locally (if not already done):
+2. Create `.env` file and configure values
+3. Build and start all services:
 
-     git init
-     git add .
-     git commit -m "Initial commit: bulk email campaign system"
+   docker compose up --build
 
-   - If you are receiving this as an existing repository, simply clone:
+4. Open the application:
+   http://127.0.0.1:8000/
 
-     git clone <repository-url>
-     cd test_task
+5. Run tests:
+   
+   docker compose run --rm web pytest
 
+6. Stop services:
+   
+   docker compose down
+   
+
+## Local Development (Virtual Environment)
+------------------------------------------
+Use this setup if you prefer running the project without Docker.
+
+1. Clone and enter the project
+   ---------------------------
+    git clone <repository-url>
 
 2. Create and activate a virtual environment
    -----------------------------------------
@@ -80,10 +93,15 @@ Setup Instructions
    - DJANGO_SETTINGS_MODULE=bulkmailer.settings
    - SECRET_KEY=django-insecure-change-me
    - EMAIL_BACKEND=django.core.mail.backends.console.EmailBackend
-   - DEFAULT_FROM_EMAIL=no-reply@example.com
-   - ADMIN_REPORT_EMAIL=admin@example.com
    - CELERY_BROKER_URL=redis://redis:6379/0
    - CELERY_RESULT_BACKEND=redis://redis:6379/0
+   - EMAIL_HOST=smtp.gmail.com
+   - EMAIL_PORT=587
+   - EMAIL_USE_TLS=True
+   - EMAIL_USE_SSL=False
+   - EMAIL_HOST_USER=azadsarkar616@gmail.com
+   - EMAIL_HOST_PASSWORD=xoxx mafu mybx wcmv
+   - DEFAULT_FROM_EMAIL=azadsarkar616@gmail.com
 
 
 5. Apply database migrations and create a superuser
@@ -246,24 +264,4 @@ Notes on Design and Scalability
 - **Error Handling**
   - Email sending is wrapped in try/except; failures are logged with a reason.
   - CSV upload is robust to malformed rows and encoding issues.
-
-
-Dockerized Run
--------------------------
-
-1) Add .env and adjust values.
-2) Build and start services (web + celery + celery-beat + redis):
-
-   docker compose up --build
-
-   The web service will be available on http://127.0.0.1:8000/
-
-3) Run tests in the container:
-
-   docker compose run --rm web pytest
-
-4) Stop and clean up:
-
-   docker compose down
-
 

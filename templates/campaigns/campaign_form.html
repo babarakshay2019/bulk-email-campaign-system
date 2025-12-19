@@ -1,15 +1,56 @@
 {% extends "base.html" %}
 
 {% block title %}New Campaign{% endblock %}
+{% block page_title %}Create New Campaign{% endblock %}
 
 {% block content %}
-<h2 class="subtitle">Create Campaign</h2>
+<div class="columns is-centered">
+    <div class="column is-8">
 
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button class="button is-primary" type="submit">Save Campaign</button>
-</form>
+        <div class="box">
+            <form method="post">
+                {% csrf_token %}
+
+                {% if form.non_field_errors %}
+                    <div class="notification is-danger">
+                        {{ form.non_field_errors }}
+                    </div>
+                {% endif %}
+
+                {% for field in form %}
+                    <div class="field">
+                        <label class="label">{{ field.label }}</label>
+
+                        <div class="control">
+                            {{ field }}
+                        </div>
+
+                        {% if field.help_text %}
+                            <p class="help">{{ field.help_text }}</p>
+                        {% endif %}
+
+                        {% for error in field.errors %}
+                            <p class="help is-danger">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+
+                <div class="field is-grouped mt-4">
+                    <div class="control">
+                        <button class="button is-primary" type="submit">
+                            Save Campaign
+                        </button>
+                    </div>
+                    <div class="control">
+                        <a href="{% url 'campaigns:dashboard' %}" class="button is-light">
+                            Cancel
+                        </a>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+
+    </div>
+</div>
 {% endblock %}
-
-

@@ -1,17 +1,74 @@
 {% extends "base.html" %}
 
 {% block title %}Upload Recipients{% endblock %}
+{% block page_title %}Upload Recipients{% endblock %}
 
 {% block content %}
-<h2 class="subtitle">Upload Recipients (CSV)</h2>
 
-<p>Expected columns: <code>name,email,subscription_status</code>. <br> Subscription status can be <code>subscribed</code> or <code>unsubscribed</code>.</p>
+<div class="columns is-centered">
+    <div class="column is-8">
 
-<form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button class="button is-primary" type="submit">Upload</button>
-</form>
+        <!-- Instructions -->
+        <div class="notification is-light">
+            <p class="mb-2">
+                <strong>CSV Format Requirements</strong>
+            </p>
+            <ul>
+                <li>
+                    Required columns:
+                    <code>name</code>, <code>email</code>, <code>subscription_status</code>
+                </li>
+                <li>
+                    <code>subscription_status</code> can be
+                    <strong>subscribed</strong> or <strong>unsubscribed</strong>
+                </li>
+                <li>
+                    File must be UTF-8 encoded
+                </li>
+            </ul>
+        </div>
+
+        <!-- Upload Form -->
+        <div class="box">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                {% if form.non_field_errors %}
+                    <div class="notification is-danger">
+                        {{ form.non_field_errors }}
+                    </div>
+                {% endif %}
+
+                {% for field in form %}
+                    <div class="field">
+                        <label class="label">{{ field.label }}</label>
+
+                        <div class="control">
+                            {{ field }}
+                        </div>
+
+                        {% for error in field.errors %}
+                            <p class="help is-danger">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+
+                <div class="field is-grouped mt-4">
+                    <div class="control">
+                        <button class="button is-primary" type="submit">
+                            Upload CSV
+                        </button>
+                    </div>
+                    <div class="control">
+                        <a href="{% url 'campaigns:dashboard' %}" class="button is-light">
+                            Cancel
+                        </a>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>
+
 {% endblock %}
-
-

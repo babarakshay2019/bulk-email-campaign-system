@@ -1,42 +1,85 @@
 {% extends "base.html" %}
 
 {% block title %}Campaign Dashboard{% endblock %}
+{% block page_title %}Campaign Dashboard{% endblock %}
 
 {% block content %}
-<h2 class="subtitle">Campaigns</h2>
 
-<table class="table is-striped is-fullwidth">
-    <thead>
-    <tr>
-        <th>Name</th>
-        <th>Subject</th>
-        <th>Scheduled</th>
-        <th>Status</th>
-        <th>Recipients</th>
-        <th>Sent</th>
-        <th>Failed</th>
-        <th>Summary</th>
-    </tr>
-    </thead>
-    <tbody>
-    {% for campaign in campaigns %}
-        <tr>
-            <td><a href="{% url 'campaigns:campaign_detail' campaign.pk %}">{{ campaign.name }}</a></td>
-            <td>{{ campaign.subject }}</td>
-            <td>{{ campaign.scheduled_time }}</td>
-            <td>{{ campaign.get_status_display }}</td>
-            <td>{{ campaign.subscribed_recipients_count }}</td>
-            <td>{{ campaign.sent_count }}</td>
-            <td>{{ campaign.failed_count }}</td>
-            <td>{{ campaign.sent_count }}/{{ campaign.subscribed_recipients_count }}</td>
-        </tr>
-    {% empty %}
-        <tr>
-            <td colspan="8">No campaigns yet.</td>
-        </tr>
-    {% endfor %}
-    </tbody>
-</table>
+<div class="box">
+    <table class="table is-striped is-hoverable is-fullwidth">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Subject</th>
+                <th>Scheduled</th>
+                <th>Status</th>
+                <th>Recipients</th>
+                <th>Sent</th>
+                <th>Failed</th>
+                <th>Summary</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for campaign in campaigns %}
+                <tr>
+                    <td>
+                        <a href="{% url 'campaigns:campaign_detail' campaign.pk %}">
+                            {{ campaign.name }}
+                        </a>
+                    </td>
+
+                    <td>{{ campaign.subject }}</td>
+
+                    <td>
+                        {{ campaign.scheduled_time|date:"M d, Y H:i" }}
+                    </td>
+
+                    <td>
+                        {% if campaign.status == "draft" %}
+                            <span class="tag is-light">Draft</span>
+                        {% elif campaign.status == "scheduled" %}
+                            <span class="tag is-info">Scheduled</span>
+                        {% elif campaign.status == "in_progress" %}
+                            <span class="tag is-warning">In Progress</span>
+                        {% else %}
+                            <span class="tag is-success">Completed</span>
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        {{ campaign.subscribed_recipients_count }}
+                    </td>
+
+                    <td>
+                        <span class="has-text-success">
+                            {{ campaign.sent_count }}
+                        </span>
+                    </td>
+
+                    <td>
+                        <span class="has-text-danger">
+                            {{ campaign.failed_count }}
+                        </span>
+                    </td>
+
+                    <td>
+                        {{ campaign.sent_count }} /
+                        {{ campaign.subscribed_recipients_count }}
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="8" class="has-text-centered has-text-grey">
+                        No campaigns yet.
+                        <br>
+                        <a href="{% url 'campaigns:campaign_create' %}">
+                            Create your first campaign
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
 {% endblock %}
-
-
